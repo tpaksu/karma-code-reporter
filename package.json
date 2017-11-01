@@ -16,8 +16,8 @@
   "author": "Taha Paksu",
   "license": "ISC",
   "dependencies": {
-    "babylon": "^6.18.0",
     "fs-extra": "^4.0.2",
+    "glob": "^7.1.2",
     "lodash": "^4.17.4",
     "path": "^0.12.7"
   }
