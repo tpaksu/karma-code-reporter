@@ -2,6 +2,7 @@ var fs = require('fs-extra');
 var path = require('path');
 var _ = require('lodash');
 var glob = require('glob');
+var util = require('util');
 
 var codeReporter = function (baseReporterDecorator, config, logger, helper, formatError) {
     var failedSpecList = [];
@@ -19,10 +20,26 @@ var codeReporter = function (baseReporterDecorator, config, logger, helper, form
                 var args = this.parseResult(failedSpecList[i][0], failedSpecList[i][1]);
                 var outputFilename = path.format({ root: config.basePath, dir: path.normalize(config.codeReporter.outputPath), base: args.id + ".html" });
                 var content = this.createContent(config, args);
-                var html = this.buildTemplate(content);
+                var output = this.formatResult(failedSpecList[i]);
+                var html = this.buildTemplate(content, output);
                 this.createFile(outputFilename, html);
             }
         }
+    };
+
+    this.formatResult = function(browserResultObject){
+        var Browser = browserResultObject[0];
+        var Result = browserResultObject[1];
+        var output = "<h3>Previously Saved Log:</h3><div class='saved_output'><div><b>Tested on </b>" + Browser.name + "</div>";
+        output += "<div><b>Test Case: </b>" + Result.description + "</div>";
+        output += "<div><b>Test Suite: </b>" + Result.suite.join(' | ') + "</div>";
+        output += "<div><b>Failures:</b><ul>";
+        Result.log.forEach(function(log){
+            log = log.replace(/\?([a-f0-9]+):([0-9]+):([0-9]+)/g,"\tLine:$2\tOffset:$3");
+            output += "<li>"+log.replace(/\n/g,"<br>")+"</li>";
+        });
+        output += "</ul></div></div>";
+        return output;
     };
 
     this.parseResult = function (browser, result) {
@@ -87,7 +104,7 @@ var codeReporter = function (baseReporterDecorator, config, logger, helper, form
 
     };
 
-    this.buildTemplate = function (content) {
+    this.buildTemplate = function (content, output) {
         var compiled = _.template(fs.readFileSync(config.codeReporter.template ? path.resolve(config.codeReporter.template) : basePath + path.sep + "template.tmpl"));
         var cssFiles = config.codeReporter.cssFiles || [];
         var jsFiles = _.extend([], _.map(config.files, function (d) { return d.pattern; }) || [], config.codeReporter.jsFiles || []);
@@ -108,7 +125,9 @@ var codeReporter = function (baseReporterDecorator, config, logger, helper, form
             favicon: basePath + path.sep + "jasmine_favicon.png",
             css: this.cssFiles,
             scripts: this.jsFiles,
-            content: content
+            content: content,
+            contentEscaped: _.escape(content).replace(/expect\s*\(/g,"<i class='highlight'>expect</i>("),
+            results: output
         });
     }
 

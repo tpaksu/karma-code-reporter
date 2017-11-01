@@ -1,19 +1,165 @@
 <!doctype html>
 <html>
+
 <head>
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Jasmine Spec Runner</title>
-  <link rel="shortcut icon" type="image/png" href="<%= favicon %>">
-  <% css.forEach(function(style){ %><link rel="stylesheet" type="text/css" href="<%= style %>">
-  <% }) %>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Jasmine Failed Spec Report</title>
+    <link rel="shortcut icon" type="image/png" href="<%= favicon %>">
+    <% css.forEach(function(style){ %>
+    <link rel="stylesheet" type="text/css" href="<%= style %>">
+    <% }) %>
+    <link rel="stylesheet" href="https://cdn.rawgit.com/Chalarangelo/mini.css/v2.3.7/dist/mini-default.min.css">
 </head>
-<body>
-<script>window.karma = window.__karma__ = { config : {}};</script>
-<% scripts.forEach(function(script){ %><script src="<%= script %>"></script>
-<% }) %><script type='text/javascript'>
-    <%= content %>
-    jasmine.getEnv().execute();
-</script>
+<body style='padding: 30px 50px;'>
+    <style>
+       h3 {
+            border-bottom: 1px solid gray;
+            padding-left: 0;
+            margin-left: 0;
+        }
+        h4 {
+            margin: 0;
+            background: #eee;
+            margin-bottom: 2px;
+            margin-top: 12px;
+            border-radius: 3px;
+            padding: 5px;
+        }
+        ul {
+            padding: 0;
+            margin: 0;
+        }
+        .highlight {
+            background: yellow;
+            font-size: 13px;
+            font-style: normal;
+            font-family: monospace;
+            padding: 1px;
+        }
+        .spec_passed_ul, .spec_failed_ul {
+            max-height: 50vh;
+            overflow-y: scroll;
+        }
+        .spec_passed_ul li {
+            list-style-type: none;
+            background: yellowgreen;
+            margin-bottom: 2px;
+            border-radius: 3px;
+            padding: 5px;
+            font-size: 13px;
+        }
+        .spec_failed_ul li {
+            list-style-type: none;
+            background: lightcoral;
+            margin-bottom: 2px;
+            border-radius: 3px;
+            padding: 5px;
+            font-size: 13px;
+        }
+        .spec_failed_ul li div {
+            float: left;
+            margin-top: 2px;
+            padding-right: 10px;
+            font-family: monospace;
+            font-size: 10px;
+        }
+        .saved_output div, .saved_output div b {
+            font-size: 13px !important;
+        }
+        .saved_output ul li {
+            font-size: 13px;
+            list-style-type: none;
+            background: lightcoral;
+            margin-bottom: 2px;
+            border-radius: 3px;
+            padding: 5px;
+        }
+        code {
+            font-size: 12px;
+            line-height: 18px;
+            display: inline-block;
+            width: 100%;
+            padding: 20px;
+            overflow: scroll;
+        }
+
+    </style>
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-md-12">
+                <h2>Jasmine Failed Spec Report</h2>
+            </div>
+            <div class="col-md-6">
+                <h3>Current Result</h3>
+                <div id='current_results'></div>
+                <%= results %>
+            </div>
+            <div class="col-md-6">
+                <h3>Spec Code</h3>
+                <code style='white-space: pre'><%= contentEscaped %></code>
+            </div>
+        </div>
+    </div>
+
+    <script>window.karma = window.__karma__ = { config: {} };</script>
+    <% scripts.forEach(function(script){ %><script src="<%= script %>"></script>
+    <% }) %>
+    <script type='text/javascript'>
+        <%= content %>
+
+        var jasmineEnv = jasmine.getEnv();
+
+        var JsApiReporter = jasmine.JsApiReporter;
+
+        function Env(options) {
+            JsApiReporter.call(this, options);
+
+            this.specDone = function(result) {
+                console.log(result);
+                var output = $("<div class='spec_result'></div>").appendTo($("#current_results"));
+                output.append("<div class='spec_name'>" + result.fullName + "</div>");
+                output.append("<div class='spec_failed'><h4>Failed Specs</h4><ul class='spec_failed_ul'></div>");
+                output.append("<div class='spec_passed'><h4>Passed Specs</h4><ul class='spec_passed_ul'></div>");
+                if(result.failedExpectations.length == 0){
+                        output.find(".spec_failed_ul").append("<li>There are no failed expectations.</li>");
+                }else{
+                    result.failedExpectations.forEach(function(log){
+                        output.find(".spec_failed_ul").append("<li><div>(+)</div> "+log.matcherName + " (" + log.message + ")<p style='display: none'><code>"+log.stack+"</code></p></li>");
+                    });
+                }
+                if(result.passedExpectations.length == 0){
+                        output.find(".spec_passed_ul").append("<li>There are no passed expectations.</li>");
+                }else{
+                    result.passedExpectations.forEach(function(log){
+                        output.find(".spec_passed_ul").append("<li>"+log.matcherName + " (" + log.message + ")</li>");
+                    });
+                }
+            };
+        }
+
+        var environment = new Env({
+          timer: new jasmine.Timer()
+        });
+
+        jasmine.getEnv().addReporter(environment);
+
+        window.onload = function() {
+            jasmineEnv.execute();
+        };
+
+        $(document).on("click",".spec_failed_ul li", function(){
+            $(this).find("p").toggle("fast", function(){
+                if($(this).is(":visible")){
+                    $(this).siblings("div").text("(-)");
+                }else{
+                    $(this).siblings("div").text("(+)");
+                }
+            });
+        });
+
+    </script>
 </body>
+
 </html>
