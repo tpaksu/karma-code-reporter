@@ -45,11 +45,42 @@ var codeReporter = function (baseReporterDecorator, config, logger, helper, form
     };
 
     this.createIndexFile = function(){
-        html = "<h2>Jasmine Failed Tests Report Index</h2><ul>";
+        var html = '<!doctype html><html><head><meta charset="utf-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"> \
+        <meta name="viewport" content="width=device-width, initial-scale=1.0"><title>Jasmine Failed Spec Report</title> \
+        <link rel="stylesheet" href="https://cdn.rawgit.com/Chalarangelo/mini.css/v2.3.7/dist/mini-default.min.css"></head> \
+        <body style="padding: 30px 50px;">\
+            <style> \
+                h2 { \
+                    font-size: 32px; \
+                    font-weight: bold; \
+                    margin: 20px 0px; \
+                    background: rebeccapurple; \
+                    color: white; \
+                    padding: 10px; \
+                } \
+                ul { \
+                    padding: 0; \
+                    margin: 0; \
+                } \
+                .spec_list_ul li { \
+                    list-style-type: none; \
+                    margin-bottom: 2px; \
+                    border-radius: 3px; \
+                    padding: 5px; \
+                    font-size: 13px; \
+                    background: white;\
+                }  \
+            </style> \
+            <div class="container-fluid"> \
+                <div class="row"> \
+                    <div class="col-md-12"> \
+                        <h2>Jasmine Failed Spec Report - Index</h2> \
+                    </div>';
+        html += "<div class='col-md-12'><ul class='spec_list_ul'>";
         fileTitles.forEach(function(value,index){
             html += "<li><a href='/"+path.resolve( config.basePath + path.sep + createdFiles[index] )+"'>"+fileTitles[index]+"</a></li>";
         });
-        html +="</ul>";
+        html +="</ul></div></div></div></body></html>";
         fs.writeFileSync(path.format({ root: config.basePath, dir: path.normalize(config.codeReporter.outputPath), base: "index.html" }), html, 'utf8');
     };
 
@@ -146,15 +177,17 @@ var codeReporter = function (baseReporterDecorator, config, logger, helper, form
 
         this.jsFiles = _.difference(_.map(jsFiles, function (d) { return path.resolve(d.replace(/\\/g, path.sep).replace(/\//g, path.sep)); }), this.ignoreFiles);
         this.cssFiles = _.difference(_.map(cssFiles, function (d) { return path.resolve(d.replace(/\\/g, path.sep).replace(/\//g, path.sep)); }), this.ignoreFiles);
-
-        return compiled({
+        var escapedContent =  _.escape(content).replace(/expect\s*\(/g,"<i class='highlight'>expect</i>(");
+        var compiledHtml = compiled({
             favicon: basePath + path.sep + "jasmine_favicon.png",
             css: this.cssFiles,
             scripts: this.jsFiles,
             content: content,
-            contentEscaped: _.escape(content).replace(/expect\s*\(/g,"<i class='highlight'>expect</i>("),
+            contentEscaped: escapedContent,
             results: output
         });
+        //codeStartIndex = compiledHtml.indexOf(escapedContent);
+        return compiledHtml;
     }
 
     this.createFile = function (filename, content) {
