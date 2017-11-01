@@ -7,6 +7,18 @@ var util = require('util');
 var codeReporter = function (baseReporterDecorator, config, logger, helper, formatError) {
     var failedSpecList = [];
     var basePath = __dirname;
+    var createdFiles = [];
+    var fileTitles = [];
+
+    this.onRunStart = function(browsersCollection){
+        var pathFormatted = path.resolve(config.basePath + path.sep + path.normalize(config.codeReporter.outputPath)) + "/*.*";
+        console.log(pathFormatted);
+        glob(pathFormatted, function(err, files){
+            files.forEach(function(file){
+                fs.unlinkSync(file);
+            });
+        });
+    };
 
     this.onSpecComplete = function (browser, result) {
         if (result.success === false) {
@@ -19,12 +31,26 @@ var codeReporter = function (baseReporterDecorator, config, logger, helper, form
             for (var i = 0; i < failedSpecList.length; i++) {
                 var args = this.parseResult(failedSpecList[i][0], failedSpecList[i][1]);
                 var outputFilename = path.format({ root: config.basePath, dir: path.normalize(config.codeReporter.outputPath), base: args.id + ".html" });
-                var content = this.createContent(config, args);
-                var output = this.formatResult(failedSpecList[i]);
-                var html = this.buildTemplate(content, output);
-                this.createFile(outputFilename, html);
+                if(!fs.existsSync(outputFilename)){
+                    var content = this.createContent(config, args);
+                    var output = this.formatResult(failedSpecList[i]);
+                    var html = this.buildTemplate(content, output);
+                    this.createFile(outputFilename, html);
+                    createdFiles.push(outputFilename);
+                    fileTitles.push(failedSpecList[i][1].description);
+                }
             }
         }
+        this.createIndexFile();
+    };
+
+    this.createIndexFile = function(){
+        html = "<h2>Jasmine Failed Tests Report Index</h2><ul>";
+        fileTitles.forEach(function(value,index){
+            html += "<li><a href='/"+path.resolve( config.basePath + path.sep + createdFiles[index] )+"'>"+fileTitles[index]+"</a></li>";
+        });
+        html +="</ul>";
+        fs.writeFileSync(path.format({ root: config.basePath, dir: path.normalize(config.codeReporter.outputPath), base: "index.html" }), html, 'utf8');
     };
 
     this.formatResult = function(browserResultObject){
@@ -181,7 +207,6 @@ var codeReporter = function (baseReporterDecorator, config, logger, helper, form
         }
         return -1;
     }
-
 };
 
 module.exports = { 'reporter:code': ['type', codeReporter] };

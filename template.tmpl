@@ -14,7 +14,15 @@
 </head>
 <body style='padding: 30px 50px;'>
     <style>
-       h3 {
+        h2 {
+            font-size: 32px;
+            font-weight: bold;
+            margin: 20px 0px;
+            background: rebeccapurple;
+            color: white;
+            padding: 10px;
+        }
+        h3 {
             border-bottom: 1px solid gray;
             padding-left: 0;
             margin-left: 0;
@@ -57,6 +65,17 @@
             border-radius: 3px;
             padding: 5px;
             font-size: 13px;
+        }
+
+        .spec_failed_ul li code {
+            max-width: 100%;
+            background: lightyellow;
+            box-sizing: border-box;
+            overflow: hidden;
+            font-size: 12px;
+            line-height: 18px;
+            display: inline-block;
+            font-family: monospace;
         }
         .spec_failed_ul li div {
             float: left;
@@ -120,13 +139,13 @@
                 console.log(result);
                 var output = $("<div class='spec_result'></div>").appendTo($("#current_results"));
                 output.append("<div class='spec_name'>" + result.fullName + "</div>");
-                output.append("<div class='spec_failed'><h4>Failed Specs</h4><ul class='spec_failed_ul'></div>");
-                output.append("<div class='spec_passed'><h4>Passed Specs</h4><ul class='spec_passed_ul'></div>");
+                output.append("<div class='spec_failed'><h4>Failed Specs ("+result.failedExpectations.length+")</h4><ul class='spec_failed_ul'></div>");
+                output.append("<div class='spec_passed'><h4>Passed Specs ("+result.passedExpectations.length+")</h4><ul class='spec_passed_ul'></div>");
                 if(result.failedExpectations.length == 0){
                         output.find(".spec_failed_ul").append("<li>There are no failed expectations.</li>");
                 }else{
                     result.failedExpectations.forEach(function(log){
-                        output.find(".spec_failed_ul").append("<li><div>(+)</div> "+log.matcherName + " (" + log.message + ")<p style='display: none'><code>"+log.stack+"</code></p></li>");
+                        output.find(".spec_failed_ul").append("<li><div>(+)</div> "+log.matcherName + " (" + log.message + ")<p style='display: none'><code>"+ log.stack.replace("<","&lt;") + "</code></p></li>");
                     });
                 }
                 if(result.passedExpectations.length == 0){
@@ -139,15 +158,9 @@
             };
         }
 
-        var environment = new Env({
-          timer: new jasmine.Timer()
-        });
-
+        var environment = new Env({ timer: new jasmine.Timer() });
         jasmine.getEnv().addReporter(environment);
-
-        window.onload = function() {
-            jasmineEnv.execute();
-        };
+        window.onload = function() { jasmineEnv.execute(); };
 
         $(document).on("click",".spec_failed_ul li", function(){
             $(this).find("p").toggle("fast", function(){
