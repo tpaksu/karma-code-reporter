@@ -184,9 +184,19 @@ var codeReporter = function (baseReporterDecorator, config, logger, helper, form
             scripts: this.jsFiles,
             content: content,
             contentEscaped: escapedContent,
+            codeStartIndex: 0,
             results: output
         });
-        //codeStartIndex = compiledHtml.indexOf(escapedContent);
+        var codeStartIndex = compiledHtml.slice(0, compiledHtml.indexOf(content)).split('\n').length;
+        var compiledHtml = compiled({
+            favicon: basePath + path.sep + "jasmine_favicon.png",
+            css: this.cssFiles,
+            scripts: this.jsFiles,
+            content: content,
+            codeStartIndex: codeStartIndex,
+            contentEscaped: escapedContent,
+            results: output
+        });
         return compiledHtml;
     }
 

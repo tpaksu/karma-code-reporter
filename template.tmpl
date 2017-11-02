@@ -12,12 +12,23 @@
     <% }) %>
     <link rel="stylesheet" href="https://cdn.rawgit.com/Chalarangelo/mini.css/v2.3.7/dist/mini-default.min.css">
 </head>
-<body style='padding: 30px 50px;'>
+<body>
     <style>
+        body {
+            margin: 0;
+            padding: 0;
+            color: #212121;
+            background: aliceblue;
+        }
+        .container-fluid {
+            margin: 40px;
+            padding: 20px;
+            background: white;
+        }
         h2 {
             font-size: 32px;
             font-weight: bold;
-            margin: 20px 0px;
+            margin: 0 0 20px 0px;
             background: rebeccapurple;
             color: white;
             padding: 10px;
@@ -41,14 +52,18 @@
         }
         .highlight {
             background: yellow;
-            font-size: 13px;
+            font-size: 12px;
             font-style: normal;
             font-family: monospace;
             padding: 1px;
+            color: black;
+        }
+        .description, .description b {
+            font-size: 12px;
         }
         .spec_passed_ul, .spec_failed_ul {
             max-height: 50vh;
-            overflow-y: scroll;
+            overflow-y: auto;
         }
         .spec_passed_ul li {
             list-style-type: none;
@@ -76,6 +91,7 @@
             line-height: 18px;
             display: inline-block;
             font-family: monospace;
+            padding: 10px;
         }
         .spec_failed_ul li div {
             float: left;
@@ -98,13 +114,27 @@
             padding: 5px;
         }
         code {
+            display: flex;
+            padding: 0;
+        }
+        code div {
+            background: repeating-linear-gradient(to bottom, #BCEEF0 0px, #395251 1px, #395251 18px);
             font-size: 12px;
+            font-family: monospace;
             line-height: 18px;
             display: inline-block;
-            width: 100%;
-            padding: 20px;
-            overflow: scroll;
             box-sizing: border-box;
+            color: #E9FABF;
+        }
+        #code {
+            flex: 1;
+            padding: 0 20px;
+            overflow: auto;
+        }
+        #line_numbers {
+            flex: 0 0;
+            padding: 0 10px;
+            border-right: 1px solid #7da4a4;
         }
 
     </style>
@@ -120,7 +150,7 @@
             </div>
             <div class="col-md-6">
                 <h3>Spec Code</h3>
-                <code style='white-space: pre'><%= contentEscaped %></code>
+                <code style='white-space: pre'><div id='line_numbers'></div><div id='code'><%= contentEscaped %></div></code>
             </div>
         </div>
     </div>
@@ -131,24 +161,28 @@
     <script type='text/javascript'>
         <%= content %>
 
-        var jasmineEnv = jasmine.getEnv();
+        var codeStartIndex = <%= codeStartIndex %>;
+        var lineCount = $("#code").text().split("\n").length;
+        for(var i = codeStartIndex; i < lineCount + codeStartIndex - 1; i++){
+            $("#line_numbers").append(i + '\n');
+        }
 
+        var jasmineEnv = jasmine.getEnv();
         var JsApiReporter = jasmine.JsApiReporter;
 
         function Env(options) {
             JsApiReporter.call(this, options);
-
             this.specDone = function(result) {
-                console.log(result);
                 var output = $("<div class='spec_result'></div>").appendTo($("#current_results"));
                 output.append("<div class='spec_name'>" + result.fullName + "</div>");
-                output.append("<div class='spec_failed'><h4>Failed Specs ("+result.failedExpectations.length+")</h4><ul class='spec_failed_ul'></div>");
+                output.append("<div class='spec_failed'><h4>Failed Specs ("+result.failedExpectations.length+")<div class='description'><b>Note: </b>Line numbers relate to the code on the right. Not the original test file.</div></h4><ul class='spec_failed_ul'></div>");
                 output.append("<div class='spec_passed'><h4>Passed Specs ("+result.passedExpectations.length+")</h4><ul class='spec_passed_ul'></div>");
                 if(result.failedExpectations.length == 0){
                         output.find(".spec_failed_ul").append("<li>There are no failed expectations.</li>");
                 }else{
                     result.failedExpectations.forEach(function(log){
-                        output.find(".spec_failed_ul").append("<li><div>(+)</div> "+log.matcherName + " (" + log.message + ")<p style='display: none'><code>"+ log.stack.replace("<","&lt;") + "</code></p></li>");
+                        var lineNumber = /UserContext\.<anonymous> \(.+:(\d+):(\d+)/.exec(log.stack)[1];
+                        output.find(".spec_failed_ul").append("<li><div>(+)</div> "+log.matcherName + " " + log.message + " - Source Line Number: " + lineNumber + " <p style='display: none'><code>"+ log.stack.replace("<","&lt;") + "</code></p></li>");
                     });
                 }
                 if(result.passedExpectations.length == 0){
