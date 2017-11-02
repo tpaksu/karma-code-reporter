@@ -8,6 +8,13 @@
 
 Prepares a test report which each failed case has it's own report and inline test case. I tested this with grunt + karma + jasmine configuration and I don't know it works on other test runners like mocha etc. It's open for collaboration.
 
+## Screenshots
+![Spec File Preview](/screenshots/screenshot-index.png?raw=true "Index File Preview")
+Index File Preview
+
+![Spec File Preview](/screenshots/screenshot-spec.png?raw=true "Spec File Preview")
+Spec File Preview
+
 ## Installation
 
 There are two installation options:
