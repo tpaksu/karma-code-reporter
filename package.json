@@ -1,20 +1,43 @@
 {
   "name": "karma-code-reporter",
-  "version": "1.0.0",
-  "description": "A Karma 'Failed Test Example Creator' Plugin",
+  "version": "0.0.1",
+  "description": "A Karma failed test examples creator module/plugin",
   "main": "index.js",
-  "scripts": {
-    "test": "npm test"
+  "homepage": "https://github.com/tpaksu/karma-code-reporter",
+  "author": {
+    "name": "Taha PAKSU",
+    "email": "tpaksu@gmail.com",
+    "url": "http://tahapaksu.com"
   },
+  "contributors": [],
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/tpaksu/karma-code-reporter.git"
+  },
+  "bugs": {
+    "url": "https://github.com/tpaksu/karma-code-reporter/issues"
+  },
+  "license": "MIT",
+  "licenses": [
+    {
+      "type": "MIT",
+      "url": "https://github.com/tpaksu/karma-code-reporter/blob/master/LICENSE"
+    }
+  ],
   "keywords": [
     "karma",
+    "karma-plugin",
+    "karma-reporter",
     "jasmine",
     "test",
     "code",
-    "scaffolding"
+    "scaffolding",
+    "testcase",
+    "html",
+    "spec",
+    "fail",
+    "debug"
   ],
-  "author": "Taha Paksu",
-  "license": "ISC",
   "dependencies": {
     "fs-extra": "^4.0.2",
     "glob": "^7.1.2",
