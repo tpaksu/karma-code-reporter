@@ -31,7 +31,7 @@ $ npm install karma-code-reporter --save-dev
 ```json
 {
     "devDependencies": {
-        "karma-code-reporter": "~1.0"
+        "karma-code-reporter": "~0.0.1"
     }
 }
 ```
@@ -110,6 +110,8 @@ In lieu of a formal styleguide take care to maintain the existing coding style.
 
 ## Release History
 * 0.0.1 initial release
+
+* 0.0.2 added screenshots to README, fixed wrong version number in Installation section
 
 ## Author
 
