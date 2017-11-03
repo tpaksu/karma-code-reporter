@@ -124,9 +124,9 @@ In lieu of a formal styleguide take care to maintain the existing coding style.
 [npm-url]: https://npmjs.org/package/karma-code-reporter
 [node-version-image]: https://img.shields.io/node/v/karma-code-reporter.svg
 [node-version-url]: https://nodejs.org/en/download/
-[travis-image]: https://img.shields.io/travis/jshttp/karma-code-reporter/master.svg
-[travis-url]: https://travis-ci.org/jshttp/karma-code-reporter
-[coveralls-image]: https://img.shields.io/coveralls/jshttp/karma-code-reporter/master.svg
-[coveralls-url]: https://coveralls.io/r/jshttp/karma-code-reporter?branch=master
+[travis-image]: https://img.shields.io/travis/tpaksu/karma-code-reporter/master.svg
+[travis-url]: https://travis-ci.org/tpaksu/karma-code-reporter
+[coveralls-image]: https://img.shields.io/coveralls/tpaksu/karma-code-reporter/master.svg
+[coveralls-url]: https://coveralls.io/r/tpaksu/karma-code-reporter?branch=master
 [downloads-image]: https://img.shields.io/npm/dm/karma-code-reporter.svg
 [downloads-url]: https://npmjs.org/package/karma-code-reporter
