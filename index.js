@@ -241,20 +241,20 @@ var codeReporter = function (baseReporterDecorator, config, logger, helper, form
 
     // return groups containing the error line
     bounds.groups.forEach(function (bound) {
-      if (errorLine < bound[1] && errorLine > bound[0])
+      if (errorLine <= bound[1] && errorLine >= bound[0])
         applied.groups.push(bound);
     });
 
     // return cases containing the error line
     bounds.cases.forEach(function (bound) {
-      if (errorLine < bound[1] && errorLine > bound[0])
+      if (errorLine <= bound[1] && errorLine >= bound[0])
         applied.cases.push(bound);
     });
 
     // return beforeEach/afterEach methods contained by the found groups
     bounds.deconst.forEach(function (bound) {
       applied.groups.forEach(function (group) {
-        if (bound[0] > group[0] && bound[1] < group[1])
+        if (bound[1] <= group[1] && bound[0] >= group[0])
           applied.deconst.push(bound);
       });
     });

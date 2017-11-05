@@ -147,7 +147,7 @@
         }
 
     </style>
-    <div class="container-fluid">
+    <div class="container-fluid karma-report-container" style='display: none'>
         <div class="row">
             <div class="col-md-12">
                 <h2>Jasmine Failed Spec Report<div class='headline'><b>Quick Tip</b> You can debug the testcase using any debugger on this file.</div></h2>
@@ -201,6 +201,9 @@
                         output.find(".spec_passed_ul").append("<li>"+log.matcherName + " (" + log.message + ")</li>");
                     });
                 }
+            };
+            this.jasmineDone = function(){
+                $(".karma-code-reporter").show();
             };
         }
 
