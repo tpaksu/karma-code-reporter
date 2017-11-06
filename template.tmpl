@@ -1,6 +1,5 @@
 <!doctype html>
 <html>
-
 <head>
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
@@ -8,7 +7,7 @@
     <title>Jasmine Failed Spec Report</title>
     <link rel="shortcut icon" type="image/png" href="<%= favicon %>">
     <% css.forEach(function(style){ %>
-    <link rel="stylesheet" type="text/css" href="<%= style %>">
+        <link rel="stylesheet" type="text/css" href="<%= style %>">
     <% }) %>
     <link rel="stylesheet" href="https://cdn.rawgit.com/Chalarangelo/mini.css/v2.3.7/dist/mini-default.min.css">
 </head>
@@ -20,11 +19,13 @@
             color: #212121;
             background: aliceblue;
         }
+
         .container-fluid {
             margin: 40px;
             padding: 20px;
             background: white;
         }
+
         h2 {
             font-size: 32px;
             font-weight: bold;
@@ -33,11 +34,13 @@
             color: white;
             padding: 10px;
         }
+
         h3 {
             border-bottom: 1px solid gray;
             padding-left: 0;
             margin-left: 0;
         }
+
         h4 {
             margin: 0;
             background: #eee;
@@ -46,10 +49,12 @@
             border-radius: 3px;
             padding: 5px;
         }
+
         ul {
             padding: 0;
             margin: 0;
         }
+
         .highlight {
             background: yellow;
             font-size: 12px;
@@ -58,13 +63,18 @@
             padding: 1px;
             color: black;
         }
-        .description, .description b {
+
+        .description,
+        .description b {
             font-size: 12px;
         }
-        .spec_passed_ul, .spec_failed_ul {
+
+        .spec_passed_ul,
+        .spec_failed_ul {
             max-height: 50vh;
             overflow-y: auto;
         }
+
         .spec_passed_ul li {
             list-style-type: none;
             background: yellowgreen;
@@ -73,6 +83,7 @@
             padding: 5px;
             font-size: 13px;
         }
+
         .spec_failed_ul li {
             list-style-type: none;
             background: lightcoral;
@@ -93,6 +104,7 @@
             font-family: monospace;
             padding: 10px;
         }
+
         .spec_failed_ul li div {
             float: left;
             margin-top: 2px;
@@ -102,9 +114,12 @@
             cursor: hand;
             cursor: pointer;
         }
-        .saved_output div, .saved_output div b {
+
+        .saved_output div,
+        .saved_output div b {
             font-size: 13px !important;
         }
+
         .saved_output ul li {
             font-size: 13px;
             list-style-type: none;
@@ -113,10 +128,12 @@
             border-radius: 3px;
             padding: 5px;
         }
+
         code {
             display: flex;
             padding: 0;
         }
+
         code div {
             background: repeating-linear-gradient(to bottom, #BCEEF0 0px, #395251 1px, #395251 18px);
             font-size: 12px;
@@ -126,38 +143,57 @@
             box-sizing: border-box;
             color: #E9FABF;
         }
+
         #code {
             flex: 1;
             padding: 0 20px;
             overflow: auto;
         }
+
         #line_numbers {
             flex: 0 0;
             padding: 0 10px;
             border-right: 1px solid #7da4a4;
         }
+
         .headline {
             float: right;
             font-size: 11px;
             font-weight: normal;
         }
+
         .headline b {
             font-size: 11px;
             font-weight: 600;
         }
 
+        @media screen and (max-width: 767px) {
+            .container-fluid {
+                margin: 0;
+            }
+            .headline {
+                float: none;
+                margin-top: 20px;
+            }
+            .saved_output ul li {
+                word-wrap: break-word;
+                word-break: break-all;
+            }
+        }
     </style>
     <div class="container-fluid karma-report-container" style='display: none'>
         <div class="row">
-            <div class="col-md-12">
-                <h2>Jasmine Failed Spec Report<div class='headline'><b>Quick Tip</b> You can debug the testcase using any debugger on this file.</div></h2>
+            <div class="col-sm-12">
+                <h2>Jasmine Failed Spec Report
+                    <div class='headline'><b>Quick Tip</b> You can debug the testcase using any debugger on this file.</div>
+                </h2>
             </div>
-            <div class="col-md-6">
+            <div class="col-md-6 col-sm-12">
                 <h3>Current Result</h3>
                 <div id='current_results'></div>
                 <%= results %>
             </div>
-            <div class="col-md-6">
+            <div class="col-md-6 col-sm-12">
                 <h3>Spec Code</h3>
                 <code style='white-space: pre'><div id='line_numbers'></div><div id='code'><%= contentEscaped %></div></code>
             </div>
@@ -165,14 +201,23 @@
     </div>
 
     <script>window.karma = window.__karma__ = { config: {} };</script>
-    <% scripts.forEach(function(script){ %><script src="<%= script %>"></script>
+    <% scripts.forEach(function(script){ %>
+        <script src="<%= script %>"></script>
     <% }) %>
     <script type='text/javascript'>
+
+        /**
+         * Debuggable test specification
+         **/
         <%= content %>
+        /**
+         * Debuggable test specification END
+         **/
 
         var codeStartIndex = <%= codeStartIndex %>;
         var lineCount = $("#code").text().split("\n").length;
-        for(var i = codeStartIndex; i < lineCount + codeStartIndex - 1; i++){
+
+        for (var i = codeStartIndex; i < lineCount + codeStartIndex - 1; i++) {
             $("#line_numbers").append(i + '\n');
         }
 
@@ -181,41 +226,41 @@
 
         function Env(options) {
             JsApiReporter.call(this, options);
-            this.specDone = function(result) {
+            this.specDone = function (result) {
                 var output = $("<div class='spec_result'></div>").appendTo($("#current_results"));
                 output.append("<div class='spec_name'>" + result.fullName + "</div>");
-                output.append("<div class='spec_failed'><h4>Failed Specs ("+result.failedExpectations.length+")<div class='description'><b>Note: </b>Line numbers relate to the code on the right. Not the original test file.</div></h4><ul class='spec_failed_ul'></div>");
-                output.append("<div class='spec_passed'><h4>Passed Specs ("+result.passedExpectations.length+")</h4><ul class='spec_passed_ul'></div>");
-                if(result.failedExpectations.length == 0){
-                        output.find(".spec_failed_ul").append("<li>There are no failed expectations.</li>");
-                }else{
-                    result.failedExpectations.forEach(function(log){
+                output.append("<div class='spec_failed'><h4>Failed Specs (" + result.failedExpectations.length + ")<div class='description'><b>Note: </b>Line numbers relate to the code on the right. Not the original test file.</div></h4><ul class='spec_failed_ul'></div>");
+                output.append("<div class='spec_passed'><h4>Passed Specs (" + result.passedExpectations.length + ")</h4><ul class='spec_passed_ul'></div>");
+                if (result.failedExpectations.length == 0) {
+                    output.find(".spec_failed_ul").append("<li>There are no failed expectations.</li>");
+                } else {
+                    result.failedExpectations.forEach(function (log) {
                         var lineNumber = /UserContext\.<anonymous> \(.+:(\d+):(\d+)/.exec(log.stack)[1];
-                        output.find(".spec_failed_ul").append("<li><div>(+)</div> "+log.matcherName + " " + log.message + " - Source Line Number: " + lineNumber + " <p style='display: none'><code>"+ log.stack.replace("<","&lt;") + "</code></p></li>");
+                        output.find(".spec_failed_ul").append("<li><div>(+)</div> " + log.matcherName + " " + log.message + " - Source Line Number: " + lineNumber + " <p style='display: none'><code>" + log.stack.replace("<", "&lt;") + "</code></p></li>");
                     });
                 }
-                if(result.passedExpectations.length == 0){
-                        output.find(".spec_passed_ul").append("<li>There are no passed expectations.</li>");
-                }else{
-                    result.passedExpectations.forEach(function(log){
-                        output.find(".spec_passed_ul").append("<li>"+log.matcherName + " (" + log.message + ")</li>");
+                if (result.passedExpectations.length == 0) {
+                    output.find(".spec_passed_ul").append("<li>There are no passed expectations.</li>");
+                } else {
+                    result.passedExpectations.forEach(function (log) {
+                        output.find(".spec_passed_ul").append("<li>" + log.matcherName + " (" + log.message + ")</li>");
                     });
                 }
             };
-            this.jasmineDone = function(){
+            this.jasmineDone = function () {
                 $(".karma-report-container").show();
             };
         }
 
         var environment = new Env({ timer: new jasmine.Timer() });
         jasmine.getEnv().addReporter(environment);
-        window.onload = function() { jasmineEnv.execute(); };
+        window.onload = function () { jasmineEnv.execute(); };
 
-        $(document).on("click",".spec_failed_ul li", function(){
-            $(this).find("p").toggle("fast", function(){
-                if($(this).is(":visible")){
+        $(document).on("click", ".spec_failed_ul li", function () {
+            $(this).find("p").toggle("fast", function () {
+                if ($(this).is(":visible")) {
                     $(this).siblings("div").text("(-)");
-                }else{
+                } else {
                     $(this).siblings("div").text("(+)");
                 }
             });

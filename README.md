@@ -113,6 +113,10 @@ In lieu of a formal styleguide take care to maintain the existing coding style.
 
 * 0.0.2 added screenshots to README, fixed wrong version number in Installation section
 
+* 0.0.3 fixed bound calculation, added report visibility hidden until tests are completed
+
+* 0.0.4 added responsive styles
+
 ## Author
 
 [Taha PAKSU](http://tahapaksu.com)
