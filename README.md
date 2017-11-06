@@ -117,6 +117,8 @@ In lieu of a formal styleguide take care to maintain the existing coding style.
 
 * 0.0.4 added responsive styles
 
+* 0.0.5 split regexes for correct quote type handling
+
 ## Author
 
 [Taha PAKSU](http://tahapaksu.com)

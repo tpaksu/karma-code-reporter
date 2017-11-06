@@ -1,0 +1,133 @@
+0 info it worked if it ends with ok
+1 verbose cli [ 'C:\\Program Files\\nodejs\\node.exe',
+1 verbose cli   'C:\\Program Files\\nodejs\\node_modules\\npm\\bin\\npm-cli.js',
+1 verbose cli   'publish' ]
+2 info using npm@3.10.10
+3 info using node@v6.11.0
+4 verbose publish [ '.' ]
+5 silly cache add args [ '.', null ]
+6 verbose cache add spec .
+7 silly cache add parsed spec Result {
+7 silly cache add   raw: '.',
+7 silly cache add   scope: null,
+7 silly cache add   escapedName: null,
+7 silly cache add   name: null,
+7 silly cache add   rawSpec: '.',
+7 silly cache add   spec: 'C:\\Users\\taha.paksu\\Desktop\\trunk\\karma-code-reporter',
+7 silly cache add   type: 'directory' }
+8 verbose addLocalDirectory C:\Users\taha.paksu\AppData\Roaming\npm-cache\karma-code-reporter\0.0.4\package.tgz not in flight; packing
+9 verbose correctMkdir C:\Users\taha.paksu\AppData\Roaming\npm-cache correctMkdir not in flight; initializing
+10 info lifecycle karma-code-reporter@0.0.4~prepublish: karma-code-reporter@0.0.4
+11 silly lifecycle karma-code-reporter@0.0.4~prepublish: no script for prepublish, continuing
+12 verbose tar pack [ 'C:\\Users\\taha.paksu\\AppData\\Roaming\\npm-cache\\karma-code-reporter\\0.0.4\\package.tgz',
+12 verbose tar pack   'C:\\Users\\taha.paksu\\Desktop\\trunk\\karma-code-reporter' ]
+13 verbose tarball C:\Users\taha.paksu\AppData\Roaming\npm-cache\karma-code-reporter\0.0.4\package.tgz
+14 verbose folder C:\Users\taha.paksu\Desktop\trunk\karma-code-reporter
+15 verbose addLocalTarball adding from inside cache C:\Users\taha.paksu\AppData\Roaming\npm-cache\karma-code-reporter\0.0.4\package.tgz
+16 verbose correctMkdir C:\Users\taha.paksu\AppData\Roaming\npm-cache correctMkdir not in flight; initializing
+17 silly cache afterAdd karma-code-reporter@0.0.4
+18 verbose afterAdd C:\Users\taha.paksu\AppData\Roaming\npm-cache\karma-code-reporter\0.0.4\package\package.json not in flight; writing
+19 verbose correctMkdir C:\Users\taha.paksu\AppData\Roaming\npm-cache correctMkdir not in flight; initializing
+20 verbose afterAdd C:\Users\taha.paksu\AppData\Roaming\npm-cache\karma-code-reporter\0.0.4\package\package.json written
+21 silly publish { name: 'karma-code-reporter',
+21 silly publish   version: '0.0.4',
+21 silly publish   description: 'A Karma failed test examples creator module/plugin',
+21 silly publish   main: 'index.js',
+21 silly publish   homepage: 'https://github.com/tpaksu/karma-code-reporter',
+21 silly publish   author:
+21 silly publish    { name: 'Taha PAKSU',
+21 silly publish      email: 'tpaksu@gmail.com',
+21 silly publish      url: 'http://tahapaksu.com' },
+21 silly publish   contributors: [],
+21 silly publish   repository:
+21 silly publish    { type: 'git',
+21 silly publish      url: 'git+https://github.com/tpaksu/karma-code-reporter.git' },
+21 silly publish   bugs: { url: 'https://github.com/tpaksu/karma-code-reporter/issues' },
+21 silly publish   license: 'MIT',
+21 silly publish   licenses:
+21 silly publish    [ { type: 'MIT',
+21 silly publish        url: 'https://github.com/tpaksu/karma-code-reporter/blob/master/LICENSE' } ],
+21 silly publish   keywords:
+21 silly publish    [ 'karma',
+21 silly publish      'karma-plugin',
+21 silly publish      'karma-reporter',
+21 silly publish      'jasmine',
+21 silly publish      'test',
+21 silly publish      'code',
+21 silly publish      'scaffolding',
+21 silly publish      'testcase',
+21 silly publish      'html',
+21 silly publish      'spec',
+21 silly publish      'fail',
+21 silly publish      'debug' ],
+21 silly publish   dependencies:
+21 silly publish    { 'fs-extra': '^4.0.2',
+21 silly publish      glob: '^7.1.2',
+21 silly publish      lodash: '^4.17.4',
+21 silly publish      path: '^0.12.7' },
+21 silly publish   readme: '# karma-code-reporter\r\n\r\n[![NPM Version][npm-image]][npm-url]\r\n[![NPM Downloads][downloads-image]][downloads-url]\r\n[![Node.js Version][node-version-image]][node-version-url]\r\n[![Build Status][travis-image]][travis-url]\r\n[![Test Coverage][coveralls-image]][coveralls-url]\r\n\r\nPrepares a test report which each failed case has it\'s own report and inline test case. I tested this with grunt + karma + jasmine configuration and I don\'t know it works on other test runners like mocha etc. It\'s open for collaboration.\r\n\r\n## Screenshots\r\n![Spec File Preview](/screenshots/screenshot-index.png?raw=true "Index File Preview")\r\nIndex File Preview\r\n\r\n![Spec File Preview](/screenshots/screenshot-spec.png?raw=true "Spec File Preview")\r\nSpec File Preview\r\n\r\n## Installation\r\n\r\nThere are two installation options:\r\n\r\n1. Install using [`npm install` command](https://docs.npmjs.com/getting-started/installing-npm-packages-locally):\r\n\r\n```sh\r\n$ npm install karma-code-reporter --save-dev\r\n```\r\n\r\n\r\n2. Add `karma-code-reporter` as a `devDependency` inside your `package.json` file\r\n\r\n```json\r\n{\r\n    "devDependencies": {\r\n        "karma-code-reporter": "~0.0.1"\r\n    }\r\n}\r\n```\r\n\r\n## Options\r\n_\\* required_\r\n\r\n### outputPath*\r\n`(string)` Defines the path that the output files will be created at. The folder will contain an `index.html` file which contains a list for each failed test, and the `spec*.html` files which contain the live versions of failed tests and the related code portion.\r\n\r\n   ```text\r\n    [output folder]\r\n    |--> index.html\r\n    |--> spec1.html\r\n    |--> spec2.html\r\n    .\r\n   ```\r\n\r\n### testFiles*\r\n`(array)` The test files which will be ignored during html generation. This is needed because we don\'t want any other test cases to interfere with the failing spec.\r\n\r\n### cssFiles\r\n`(array)` The extra css files which you want to include in the failed spec HTML files.\r\n\r\n### jsFiles\r\n`(array)` The extra javascript files which you want to include int the failed spec HTML files.\r\n\r\n## Configuration\r\n\r\nIf you use a `karma.conf.js` file to define karma configuration, you can add this plugin\'s configuration like this:\r\n\r\n```js\r\n// karma.conf.js\r\nmodule.exports = function(config) {\r\n  config.set({\r\n    reporters: [\'code\'],\r\n    codeReporter: {\r\n        outputPath: \'tests/output/code\',\r\n        testFiles: [\'tests/*.test.js\'],\r\n        cssFiles: [\'build/css/style.min.css\'],\r\n        jsFiles: [\'build/js/script.min.js\']\r\n    }\r\n  });\r\n};\r\n```\r\n\r\nOr if you are using `Gruntfile.js` to configure karma, you can use it **like** this:\r\n\r\n```js\r\nmodule.exports = function (grunt) {\r\n    // Project configuration.\r\n    grunt.initConfig({\r\n        karma: {\r\n            dist: {\r\n                options: {\r\n                    files: [],\r\n                    basePath: \'\',\r\n                    frameworks: [\'jasmine\'],\r\n                    reporters: [\'progress\', \'code\'],\r\n                    port: 9876,\r\n                    colors: true,\r\n                    browsers: [\'PhantomJS\'],\r\n                    singleRun: true,\r\n                    codeReporter: {\r\n                        outputPath: \'tests/output/code\',\r\n                        testFiles: [\'tests/*.test.js\'],\r\n                        cssFiles: [\'build/css/caleran.min.css\']\r\n                    }\r\n                }\r\n            }\r\n        }\r\n    });\r\n```\r\n## Contributing\r\nIn lieu of a formal styleguide take care to maintain the existing coding style.\r\n\r\n## Release History\r\n* 0.0.1 initial release\r\n\r\n* 0.0.2 added screenshots to README, fixed wrong version number in Installation section\r\n\r\n* 0.0.3 fixed bound calculation, added report visibility hidden until tests are completed\r\n\r\n* 0.0.4 added responsive styles\r\n\r\n## Author\r\n\r\n[Taha PAKSU](http://tahapaksu.com)\r\n\r\n## License\r\n[MIT](LICENSE)\r\n\r\n[npm-image]: https://img.shields.io/npm/v/karma-code-reporter.svg\r\n[npm-url]: https://npmjs.org/package/karma-code-reporter\r\n[node-version-image]: https://img.shields.io/node/v/karma-code-reporter.svg\r\n[node-version-url]: https://nodejs.org/en/download/\r\n[travis-image]: https://img.shields.io/travis/tpaksu/karma-code-reporter/master.svg\r\n[travis-url]: https://travis-ci.org/tpaksu/karma-code-reporter\r\n[coveralls-image]: https://img.shields.io/coveralls/tpaksu/karma-code-reporter/master.svg\r\n[coveralls-url]: https://coveralls.io/r/tpaksu/karma-code-reporter?branch=master\r\n[downloads-image]: https://img.shields.io/npm/dm/karma-code-reporter.svg\r\n[downloads-url]: https://npmjs.org/package/karma-code-reporter\r\n',
+21 silly publish   readmeFilename: 'README.md',
+21 silly publish   gitHead: 'c6c065a8db744b82ca9761b18b911e077013bf5f',
+21 silly publish   _id: 'karma-code-reporter@0.0.4',
+21 silly publish   scripts: {},
+21 silly publish   _shasum: '70b89a462806fbccc2c727d3919f25e21ab83a78',
+21 silly publish   _from: '.' }
+22 verbose getPublishConfig undefined
+23 silly mapToRegistry name karma-code-reporter
+24 silly mapToRegistry using default registry
+25 silly mapToRegistry registry https://registry.npmjs.org/
+26 silly mapToRegistry data Result {
+26 silly mapToRegistry   raw: 'karma-code-reporter',
+26 silly mapToRegistry   scope: null,
+26 silly mapToRegistry   escapedName: 'karma-code-reporter',
+26 silly mapToRegistry   name: 'karma-code-reporter',
+26 silly mapToRegistry   rawSpec: '',
+26 silly mapToRegistry   spec: 'latest',
+26 silly mapToRegistry   type: 'tag' }
+27 silly mapToRegistry uri https://registry.npmjs.org/karma-code-reporter
+28 verbose publish registryBase https://registry.npmjs.org/
+29 silly publish uploading C:\Users\taha.paksu\AppData\Roaming\npm-cache\karma-code-reporter\0.0.4\package.tgz
+30 verbose request uri https://registry.npmjs.org/karma-code-reporter
+31 verbose request sending authorization for write operation
+32 info attempt registry request try #1 at 07:27:26
+33 verbose request using bearer token for auth
+34 verbose request id 48d2a5cc8ecd8ea5
+35 http request PUT https://registry.npmjs.org/karma-code-reporter
+36 http 403 https://registry.npmjs.org/karma-code-reporter
+37 verbose headers { 'content-type': 'application/json',
+37 verbose headers   'cache-control': 'max-age=300',
+37 verbose headers   'content-length': '91',
+37 verbose headers   'accept-ranges': 'bytes',
+37 verbose headers   date: 'Mon, 06 Nov 2017 17:27:35 GMT',
+37 verbose headers   via: '1.1 varnish',
+37 verbose headers   connection: 'keep-alive',
+37 verbose headers   'x-served-by': 'cache-hhn1528-HHN',
+37 verbose headers   'x-cache': 'MISS',
+37 verbose headers   'x-cache-hits': '0',
+37 verbose headers   'x-timer': 'S1509989252.658216,VS0,VE3820',
+37 verbose headers   vary: 'Accept-Encoding, Accept' }
+38 verbose request invalidating C:\Users\taha.paksu\AppData\Roaming\npm-cache\registry.npmjs.org\karma-code-reporter on PUT
+39 error publish Failed PUT 403
+40 verbose stack Error: You cannot publish over the previously published version 0.0.4. : karma-code-reporter
+40 verbose stack     at makeError (C:\Program Files\nodejs\node_modules\npm\node_modules\npm-registry-client\lib\request.js:302:12)
+40 verbose stack     at CachingRegistryClient.<anonymous> (C:\Program Files\nodejs\node_modules\npm\node_modules\npm-registry-client\lib\request.js:290:14)
+40 verbose stack     at Request._callback (C:\Program Files\nodejs\node_modules\npm\node_modules\npm-registry-client\lib\request.js:210:14)
+40 verbose stack     at Request.self.callback (C:\Program Files\nodejs\node_modules\npm\node_modules\request\request.js:187:22)
+40 verbose stack     at emitTwo (events.js:106:13)
+40 verbose stack     at Request.emit (events.js:191:7)
+40 verbose stack     at Request.<anonymous> (C:\Program Files\nodejs\node_modules\npm\node_modules\request\request.js:1048:10)
+40 verbose stack     at emitOne (events.js:96:13)
+40 verbose stack     at Request.emit (events.js:188:7)
+40 verbose stack     at IncomingMessage.<anonymous> (C:\Program Files\nodejs\node_modules\npm\node_modules\request\request.js:969:12)
+41 verbose statusCode 403
+42 verbose pkgid karma-code-reporter
+43 verbose cwd C:\Users\taha.paksu\Desktop\trunk\karma-code-reporter
+44 error Windows_NT 6.1.7601
+45 error argv "C:\\Program Files\\nodejs\\node.exe" "C:\\Program Files\\nodejs\\node_modules\\npm\\bin\\npm-cli.js" "publish"
+46 error node v6.11.0
+47 error npm  v3.10.10
+48 error code E403
+49 error You cannot publish over the previously published version 0.0.4. : karma-code-reporter
+50 error If you need help, you may report this error at:
+50 error     <https://github.com/npm/npm/issues>
+51 verbose exit [ 1, true ]
