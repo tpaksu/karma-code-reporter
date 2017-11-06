@@ -361,21 +361,23 @@ var codeReporter = function (baseReporterDecorator, config, logger, helper, form
     // loop each line
     for (var i = 0; i < content.length; i++) {
       // prepare regular expressions for describe, it and before/afterEach blocks
-      var regex1 = /describe\s*\(\s*(?:\"|')[^\"']+(?:\"|')\s*,\s*function\s*\(/i;
-      var regex2 = /it\s*\(\s*(?:\"|')[^\"']+(?:\"|')\s*,\s*function\s*\(/i;
-      var regex3 = /(?:beforeEach|afterEach)\s*\(\s*function\s*\(/i;
+      var regex1 = /describe\s*\(\s*"[^"]+"\s*,\s*function\s*\(/i;
+      var regex2 = /describe\s*\(\s*'[^']+'\s*,\s*function\s*\(/i;
+      var regex3 = /it\s*\(\s*"[^"]+"\s*,\s*function\s*\(/i;
+      var regex4 = /it\s*\(\s*'[^']+'\s*,\s*function\s*\(/i;
+      var regex5 = /(?:beforeEach|afterEach)\s*\(\s*function\s*\(/i;
       // if it's a match for "describe"
-      if ((regex1.exec(content[i]) || []).length > 0) {
+      if ((regex1.exec(content[i]) || regex2.exec(content[i]) || []).length > 0) {
         // push the bounds for this block
         bounds.groups.push([i, this.findEndLine(content, i)]);
       }
       // if it's a match for "it"
-      else if ((regex2.exec(content[i]) || []).length > 0) {
+      else if ((regex3.exec(content[i]) || regex4.exec(content[i]) || []).length > 0) {
         // push the bounds for this block
         bounds.cases.push([i, this.findEndLine(content, i)]);
       }
       // if it's a match for "beforeEach" or "afterEach"
-      else if ((regex3.exec(content[i]) || []).length > 0) {
+      else if ((regex5.exec(content[i]) || []).length > 0) {
         // push the bounds for this block
         bounds.deconst.push([i, this.findEndLine(content, i)]);
       }
