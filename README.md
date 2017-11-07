@@ -119,6 +119,8 @@ In lieu of a formal styleguide take care to maintain the existing coding style.
 
 * 0.0.5 split regexes for correct quote type handling
 
+* 0.0.6 removed 'UserContext' from log.stack parsing regex
+
 ## Author
 
 [Taha PAKSU](http://tahapaksu.com)

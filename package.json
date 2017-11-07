@@ -1,6 +1,6 @@
 {
   "name": "karma-code-reporter",
-  "version": "0.0.5",
+  "version": "0.0.6",
   "description": "A Karma failed test examples creator module/plugin",
   "main": "index.js",
   "homepage": "https://github.com/tpaksu/karma-code-reporter",

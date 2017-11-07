@@ -235,7 +235,7 @@
                     output.find(".spec_failed_ul").append("<li>There are no failed expectations.</li>");
                 } else {
                     result.failedExpectations.forEach(function (log) {
-                        var lineNumber = /UserContext\.<anonymous> \(.+:(\d+):(\d+)/.exec(log.stack)[1];
+                        var lineNumber = /\.<anonymous> \(.+:(\d+):(\d+)/.exec(log.stack)[1];
                         output.find(".spec_failed_ul").append("<li><div>(+)</div> " + log.matcherName + " " + log.message + " - Source Line Number: " + lineNumber + " <p style='display: none'><code>" + log.stack.replace("<", "&lt;") + "</code></p></li>");
                     });
                 }
