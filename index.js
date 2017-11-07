@@ -238,11 +238,17 @@ var codeReporter = function (baseReporterDecorator, config, logger, helper, form
       cases: [],
       deconst: []
     };
+    var dismissed = {
+      groups: []
+    };
 
     // return groups containing the error line
     bounds.groups.forEach(function (bound) {
-      if (errorLine <= bound[1] && errorLine >= bound[0])
+      if (errorLine <= bound[1] && errorLine >= bound[0]) {
         applied.groups.push(bound);
+      } else {
+        dismissed.groups.push(bound);
+      }
     });
 
     // return cases containing the error line
@@ -253,10 +259,19 @@ var codeReporter = function (baseReporterDecorator, config, logger, helper, form
 
     // return beforeEach/afterEach methods contained by the found groups
     bounds.deconst.forEach(function (bound) {
-      applied.groups.forEach(function (group) {
-        if (bound[1] <= group[1] && bound[0] >= group[0])
-          applied.deconst.push(bound);
+      var dismiss = false;
+      dismissed.groups.forEach(function(group){
+        if(bound[1] <= group[1] && bound[0] >= group[0]){
+          dismiss = true;
+          return;
+        }
       });
+      if(!dismiss){
+        applied.groups.forEach(function (group) {
+          if (bound[1] <= group[1] && bound[0] >= group[0])
+            applied.deconst.push(bound);
+        });
+      }
     });
 
     // prepare the new script line numbers container array
@@ -361,23 +376,21 @@ var codeReporter = function (baseReporterDecorator, config, logger, helper, form
     // loop each line
     for (var i = 0; i < content.length; i++) {
       // prepare regular expressions for describe, it and before/afterEach blocks
-      var regex1 = /describe\s*\(\s*"[^"]+"\s*,\s*function\s*\(/i;
-      var regex2 = /describe\s*\(\s*'[^']+'\s*,\s*function\s*\(/i;
-      var regex3 = /it\s*\(\s*"[^"]+"\s*,\s*function\s*\(/i;
-      var regex4 = /it\s*\(\s*'[^']+'\s*,\s*function\s*\(/i;
-      var regex5 = /(?:beforeEach|afterEach)\s*\(\s*function\s*\(/i;
+      var regex1 = /describe\s*\(.+?,\s*function\s*\([^)]*\)\s*\{/;
+      var regex2 = /it\s*\(.+?,\s*function\s*\(/;
+      var regex3 = /(?:beforeEach|afterEach)\s*\(\s*function\s*\(/;
       // if it's a match for "describe"
-      if ((regex1.exec(content[i]) || regex2.exec(content[i]) || []).length > 0) {
+      if ((regex1.exec(content[i]) || []).length > 0) {
         // push the bounds for this block
         bounds.groups.push([i, this.findEndLine(content, i)]);
       }
       // if it's a match for "it"
-      else if ((regex3.exec(content[i]) || regex4.exec(content[i]) || []).length > 0) {
+      else if ((regex2.exec(content[i]) || []).length > 0) {
         // push the bounds for this block
         bounds.cases.push([i, this.findEndLine(content, i)]);
       }
       // if it's a match for "beforeEach" or "afterEach"
-      else if ((regex5.exec(content[i]) || []).length > 0) {
+      else if ((regex3.exec(content[i]) || []).length > 0) {
         // push the bounds for this block
         bounds.deconst.push([i, this.findEndLine(content, i)]);
       }

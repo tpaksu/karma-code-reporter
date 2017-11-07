@@ -121,6 +121,8 @@ In lieu of a formal styleguide take care to maintain the existing coding style.
 
 * 0.0.6 removed 'UserContext' from log.stack parsing regex
 
+* 0.0.7 improved case surroundings detection (describe, beforeEach, afterEach)
+
 ## Author
 
 [Taha PAKSU](http://tahapaksu.com)
