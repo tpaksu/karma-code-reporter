@@ -196,7 +196,8 @@ var codeReporter = function (baseReporterDecorator, config, logger, helper, form
   this.parseResult = function (browser, result) {
     var args = {};
     args.id = result.id;
-    args.source = result.log[0].split("\n")[1];
+    var loglines = result.log[0].split("\n");
+    args.source = loglines.filter((line) => { return /\s*at UserContext/.test(line) == true; })[0];
     args.filename = args.source.split("?")[0].split("base")[1].substr(1);
     args.query = args.source.split("?")[1];
     args.queryArgs = {};
