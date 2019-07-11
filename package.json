@@ -1,6 +1,6 @@
 {
   "name": "karma-code-reporter",
-  "version": "0.0.9",
+  "version": "0.0.10",
   "description": "A Karma failed test examples creator module/plugin",
   "main": "index.js",
   "homepage": "https://github.com/tpaksu/karma-code-reporter",
@@ -41,7 +41,7 @@
   "dependencies": {
     "fs-extra": "^4.0.2",
     "glob": "^7.1.2",
-    "lodash": ">=4.17.5",
+    "lodash": "^4.17.13",
     "path": "^0.12.7"
   }
 }
