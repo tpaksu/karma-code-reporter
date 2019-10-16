@@ -111,17 +111,15 @@ In lieu of a formal styleguide take care to maintain the existing coding style.
 ## Release History
 * 0.0.1 initial release
 
-* 0.0.2 added screenshots to README, fixed wrong version number in Installation section
-
-* 0.0.3 fixed bound calculation, added report visibility hidden until tests are completed
-
-* 0.0.4 added responsive styles
-
-* 0.0.5 split regexes for correct quote type handling
-
-* 0.0.6 removed 'UserContext' from log.stack parsing regex
-
-* 0.0.7 improved case surroundings detection (describe, beforeEach, afterEach)
+* 0.0.2  added screenshots to README, fixed wrong version number in Installation section
+* 0.0.3  fixed bound calculation, added report visibility hidden until tests are completed
+* 0.0.4  added responsive styles
+* 0.0.5  split regexes for correct quote type handling
+* 0.0.6  removed 'UserContext' from log.stack parsing regex
+* 0.0.7  improved case surroundings detection (describe, beforeEach, afterEach)
+* 0.0.8  fixed source filename and line number parsing from log reports, updated lodash
+* 0.0.9  lodash security fix reported by dependabot
+* 0.0.10 previous version bump fixes, not so important
 
 ## Author
 
