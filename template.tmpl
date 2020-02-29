@@ -215,10 +215,10 @@
          **/
 
         var codeStartIndex = <%= codeStartIndex %>;
-        var lineCount = $("#code").text().split("\n").length;
+        var lineCount = document.querySelector("#code").innerText.split("\n").length;
 
         for (var i = codeStartIndex; i < lineCount + codeStartIndex - 1; i++) {
-            $("#line_numbers").append(i + '\n');
+            document.querySelector("#line_numbers").insertAdjacentHTML("beforeend", i + '\n');
         }
 
         var jasmineEnv = jasmine.getEnv();
@@ -227,28 +227,30 @@
         function Env(options) {
             JsApiReporter.call(this, options);
             this.specDone = function (result) {
-                var output = $("<div class='spec_result'></div>").appendTo($("#current_results"));
-                output.append("<div class='spec_name'>" + result.fullName + "</div>");
-                output.append("<div class='spec_failed'><h4>Failed Specs (" + result.failedExpectations.length + ")<div class='description'><b>Note: </b>Line numbers relate to the code on the right. Not the original test file.</div></h4><ul class='spec_failed_ul'></div>");
-                output.append("<div class='spec_passed'><h4>Passed Specs (" + result.passedExpectations.length + ")</h4><ul class='spec_passed_ul'></div>");
+                var output = document.createElement('div');
+                output.classList.add('spec_result');
+                output.insertAdjacentHTML("beforeend", "<div class='spec_name'>" + result.fullName + "</div>");
+                output.insertAdjacentHTML("beforeend", "<div class='spec_failed'><h4>Failed Specs (" + result.failedExpectations.length + ")<div class='description'><b>Note: </b>Line numbers relate to the code on the right. Not the original test file.</div></h4><ul class='spec_failed_ul'></div>");
+                output.insertAdjacentHTML("beforeend", "<div class='spec_passed'><h4>Passed Specs (" + result.passedExpectations.length + ")</h4><ul class='spec_passed_ul'></div>");
                 if (result.failedExpectations.length == 0) {
-                    output.find(".spec_failed_ul").append("<li>There are no failed expectations.</li>");
+                    output.querySelector(".spec_failed_ul").insertAdjacentHTML("beforeend", "<li>There are no failed expectations.</li>");
                 } else {
                     result.failedExpectations.forEach(function (log) {
                         var lineNumber = /\.<anonymous> \(.+:(\d+):(\d+)/.exec(log.stack)[1];
-                        output.find(".spec_failed_ul").append("<li><div>(+)</div> " + log.matcherName + " " + log.message + " - Source Line Number: " + lineNumber + " <p style='display: none'><code>" + log.stack.replace("<", "&lt;") + "</code></p></li>");
+                        output.querySelector(".spec_failed_ul").insertAdjacentHTML("beforeend", "<li><div>(+)</div> " + log.matcherName + " " + log.message + " - Source Line Number: " + lineNumber + " <p style='display: none'><code>" + log.stack.replace("<", "&lt;") + "</code></p></li>");
                     });
                 }
                 if (result.passedExpectations.length == 0) {
-                    output.find(".spec_passed_ul").append("<li>There are no passed expectations.</li>");
+                    output.querySelector(".spec_passed_ul").insertAdjacentHTML("beforeend", "<li>There are no passed expectations.</li>");
                 } else {
                     result.passedExpectations.forEach(function (log) {
-                        output.find(".spec_passed_ul").append("<li>" + log.matcherName + " (" + log.message + ")</li>");
+                        output.querySelector(".spec_passed_ul").insertAdjacentHTML("beforeend", "<li>" + log.matcherName + " (" + log.message + ")</li>");
                     });
                 }
+                document.querySelector("#current_results").appendChild(output);
             };
             this.jasmineDone = function () {
-                $(".karma-report-container").show();
+                document.querySelector(".karma-report-container").style.display = "block";
             };
         }
 
@@ -256,14 +258,18 @@
         jasmine.getEnv().addReporter(environment);
         window.onload = function () { jasmineEnv.execute(); };
 
-        $(document).on("click", ".spec_failed_ul li", function () {
-            $(this).find("p").toggle("fast", function () {
-                if ($(this).is(":visible")) {
-                    $(this).siblings("div").text("(-)");
-                } else {
-                    $(this).siblings("div").text("(+)");
-                }
-            });
+        document.addEventListener("click", function (event) {
+            if(event.target.matches(".spec_failed_ul li")) {
+                event.target.querySelectorAll("p").forEach(function(item){
+                    if(item.style.display == "block"){
+                        this.parentNode.querySelector("div").innerText = "(+)";
+                        item.style.display = "none";
+                    } else {
+                        this.parentNode.querySelector("div").innerText = "(-)";
+                        item.style.display = "block";
+                    }
+                });
+            }
         });
 
     </script>

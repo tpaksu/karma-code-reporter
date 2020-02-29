@@ -85,21 +85,23 @@ var codeReporter = function (baseReporterDecorator, config, logger, helper, form
       for (var i = 0; i < failedSpecList.length; i++) {
         // create parameters from the failed test members
         var args = this.parseResult(failedSpecList[i].browser, failedSpecList[i].result);
-        // define the output filename concatenated with the output path
-        var outputFilename = path.format({ root: config.basePath, dir: path.normalize(config.codeReporter.outputPath), base: args.id + ".html" });
-        // if the file wasn't created before
-        if (!fs.existsSync(outputFilename)) {
-          // get the test code for the spec
-          var testcode = this.createTestCode(args);
-          // create static test result content
-          var testresult = this.formatResult(failedSpecList[i]);
-          // build template
-          var html = this.buildTemplate(testcode, testresult);
-          // create file
-          this.createFile(outputFilename, html);
-          // push the created file path and title to an array for building the index page
-          createdFiles.push(outputFilename);
-          fileTitles.push(failedSpecList[i].result.description);
+        if(args){
+          // define the output filename concatenated with the output path
+          var outputFilename = path.format({ root: config.basePath, dir: path.normalize(config.codeReporter.outputPath), base: args.id + ".html" });
+          // if the file wasn't created before
+          if (!fs.existsSync(outputFilename)) {
+            // get the test code for the spec
+            var testcode = this.createTestCode(args);
+            // create static test result content
+            var testresult = this.formatResult(failedSpecList[i]);
+            // build template
+            var html = this.buildTemplate(testcode, testresult);
+            // create file
+            this.createFile(outputFilename, html);
+            // push the created file path and title to an array for building the index page
+            createdFiles.push(outputFilename);
+            fileTitles.push(failedSpecList[i].result.description);
+          }
         }
       }
       // at last, create the index file
@@ -161,7 +163,7 @@ var codeReporter = function (baseReporterDecorator, config, logger, helper, form
     // for each file created
     fileTitles.forEach(function (value, index) {
       // append the file title and link it to the file path
-      html += "<li><a href='/" + path.resolve(config.basePath + path.sep + createdFiles[index]) + "'>" + fileTitles[index] + "</a></li>";
+      html += "<li><a href='" + path.resolve(config.basePath + path.sep + createdFiles[index]) + "'>" + fileTitles[index] + "</a></li>";
     });
     // close the document
     html += "</ul></div></div></div></body></html>";
@@ -196,18 +198,24 @@ var codeReporter = function (baseReporterDecorator, config, logger, helper, form
   this.parseResult = function (browser, result) {
     var args = {};
     args.id = result.id;
-    var loglines = result.log[0].split("\n");
-    args.source = loglines.filter((line) => { return /\s*at UserContext/.test(line) == true; })[0];
-    args.filename = args.source.split("?")[0].split("base")[1].substr(1);
-    args.query = args.source.split("?")[1];
-    args.queryArgs = {};
-    args.queryArgs.line = args.query.split(":")[1];
-    args.queryArgs.id = args.query.split(":")[0];
-    args.queryArgs.pos = args.query.split(":")[2];
-    args.scope = result.suite[0];
-    args.name = result.description;
-    args.elapsed = result.time;
-    return args;
+    if(result.log && Array.isArray(result.log)){
+      var loglines = result.log[0].split("\n");
+      args.source = loglines.filter((line) => { return /\s*at UserContext/.test(line) == true; })[0];
+      if(args.source){
+      args.filename = args.source.split("?")[0].split("base")[1].substr(1);
+      args.query = args.source.split("?")[1];
+      if(args.query){
+        args.queryArgs = {};
+        args.queryArgs.line = args.query.split(":")[1];
+        args.queryArgs.id = args.query.split(":")[0];
+        args.queryArgs.pos = args.query.split(":")[2];
+      }}
+      args.scope = result.suite[0];
+      args.name = result.description;
+      args.elapsed = result.time;
+      return args;
+    }
+    return false;
   };
 
   /**
@@ -324,6 +332,10 @@ var codeReporter = function (baseReporterDecorator, config, logger, helper, form
     this.jsFiles = _.difference(_.map(jsFiles, function (d) { return path.resolve(d.replace(/\\/g, path.sep).replace(/\//g, path.sep)); }), this.ignoreFiles);
     // get the ignore-free version of css files array
     this.cssFiles = _.difference(_.map(cssFiles, function (d) { return path.resolve(d.replace(/\\/g, path.sep).replace(/\//g, path.sep)); }), this.ignoreFiles);
+
+    _.merge(this.cssFiles, _.remove(this.jsFiles, function(value){
+      return _.endsWith(value, ".css");
+    }));
 
     // escape the content to show in the user interface
     var escapedContent = _.escape(testcode).replace(/expect\s*\(/g, "<i class='highlight'>expect</i>(");
