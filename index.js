@@ -1,5 +1,5 @@
 /**
- * karma-code-reporter
+ * karma-code-reporter v0.1.0
  *
  * Copyright 2017 Taha PAKSU
  *

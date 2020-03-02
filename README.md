@@ -31,7 +31,7 @@ $ npm install karma-code-reporter --save-dev
 ```json
 {
     "devDependencies": {
-        "karma-code-reporter": "~0.0.1"
+        "karma-code-reporter": "~0.1.0"
     }
 }
 ```
@@ -109,8 +109,8 @@ module.exports = function (grunt) {
 In lieu of a formal styleguide take care to maintain the existing coding style.
 
 ## Release History
-* 0.0.1 initial release
 
+* 0.0.1 initial release
 * 0.0.2  added screenshots to README, fixed wrong version number in Installation section
 * 0.0.3  fixed bound calculation, added report visibility hidden until tests are completed
 * 0.0.4  added responsive styles
@@ -120,6 +120,10 @@ In lieu of a formal styleguide take care to maintain the existing coding style.
 * 0.0.8  fixed source filename and line number parsing from log reports, updated lodash
 * 0.0.9  lodash security fix reported by dependabot
 * 0.0.10 previous version bump fixes, not so important
+
+* 0.1.0  - added more source line definitions such as "@file?id:line:pos" and " at Anonymous function (file?id:line:pos) for parsing,
+         - added folder separation by browser type,
+         - fixed some exceptions
 
 ## Author
 
