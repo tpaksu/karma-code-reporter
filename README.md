@@ -124,6 +124,7 @@ In lieu of a formal styleguide take care to maintain the existing coding style.
 * 0.1.0  - added more source line definitions such as "@file?id:line:pos" and " at Anonymous function (file?id:line:pos) for parsing,
          - added folder separation by browser type,
          - fixed some exceptions
+* 0.1.1  - fixed index file title and path mismatch
 
 ## Author
 

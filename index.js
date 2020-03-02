@@ -1,5 +1,5 @@
 /**
- * karma-code-reporter v0.1.0
+ * karma-code-reporter v0.1.1
  *
  * Copyright 2017 Taha PAKSU
  *
@@ -37,8 +37,6 @@ var codeReporter = function (baseReporterDecorator, config, logger, helper, form
   var basePath = __dirname;
   /* created files array */
   var createdFiles = [];
-  /* created file titles array */
-  var fileTitles = [];
 
   /**
    * Event triggered when browsers are ready and execution starts
@@ -115,8 +113,10 @@ var codeReporter = function (baseReporterDecorator, config, logger, helper, form
             // create file
             this.createFile(outputFilename, html);
             // push the created file path and title to an array for building the index page
-            createdFiles.push(outputFilename);
-            fileTitles.push(failedSpecList[i].browser.name + " - " + failedSpecList[i].result.description);
+            createdFiles.push({
+              title: failedSpecList[i].browser.name + " - " + failedSpecList[i].result.description,
+              path: outputFilename
+            });
           }
         }
       }
@@ -177,9 +177,9 @@ var codeReporter = function (baseReporterDecorator, config, logger, helper, form
     // append the list
     html += "<div class='col-md-12'><ul class='spec_list_ul'>";
     // for each file created
-    fileTitles.sort((a,b) => a >= b ? 1 : -1).forEach(function (value, index) {
+    createdFiles.sort((a,b) => a.title >= b.title ? 1 : -1).forEach(function (value) {
       // append the file title and link it to the file path
-      html += "<li><a href='" + url.pathToFileURL(path.resolve(config.basePath + path.sep + createdFiles[index])) + "'>" + fileTitles[index] + "</a></li>";
+      html += "<li><a href='" + url.pathToFileURL(path.resolve(config.basePath + path.sep + value.path)) + "'>" + value.title + "</a></li>";
     });
     // close the document
     html += "</ul></div></div></div></body></html>";
