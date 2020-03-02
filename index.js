@@ -21,7 +21,7 @@ var fs = require('fs-extra');
 var path = require('path');
 var _ = require('lodash');
 var glob = require('glob');
-var util = require('util');
+var url = require('url');
 /**
  * Reporter Constructor
  * @param {function} baseReporterDecorator : a function that takes an object and adds to it methods and properties of karma’s basic reporter (following the Decorator pattern).
@@ -46,16 +46,31 @@ var codeReporter = function (baseReporterDecorator, config, logger, helper, form
    * @returns void
    */
   this.onRunStart = function (browsersCollection) {
+    /**
+     * Remove directory recursivel
+     * @param {string} dir_path
+     * @see https://stackoverflow.com/a/42505874/3027390
+     */
+    const rimraf = function(dir_path) {
+      if (fs.existsSync(dir_path)) {
+          fs.readdirSync(dir_path).forEach(function(entry) {
+              var entry_path = path.join(dir_path, entry);
+              if (fs.lstatSync(entry_path).isDirectory()) {
+                  rimraf(entry_path);
+              } else {
+                  fs.unlinkSync(entry_path);
+              }
+          });
+          fs.rmdirSync(dir_path);
+      }
+    }
+
     // get the output directory path and resolve existing files
-    var pathFormatted = path.resolve(config.basePath + path.sep + path.normalize(config.codeReporter.outputPath)) + "/*.*";
+    var pathFormatted = path.resolve(config.basePath + path.sep + path.normalize(config.codeReporter.outputPath));
     // resolve wildcards asynchronously
-    glob(pathFormatted, function (err, files) {
-      // when resolving finished, delete each file in the files array
-      files.forEach(function (file) {
-        // delete file
-        fs.unlinkSync(file);
-      });
-    });
+    if(pathFormatted != "/"){
+      rimraf(pathFormatted);
+    }
   };
 
   /**
@@ -85,9 +100,10 @@ var codeReporter = function (baseReporterDecorator, config, logger, helper, form
       for (var i = 0; i < failedSpecList.length; i++) {
         // create parameters from the failed test members
         var args = this.parseResult(failedSpecList[i].browser, failedSpecList[i].result);
-        if(args){
+
+        if(args && args.source){
           // define the output filename concatenated with the output path
-          var outputFilename = path.format({ root: config.basePath, dir: path.normalize(config.codeReporter.outputPath), base: args.id + ".html" });
+          var outputFilename = path.format({ root: config.basePath, dir: path.normalize(config.codeReporter.outputPath + path.sep + failedSpecList[i].browser.name), base: args.id + ".html" });
           // if the file wasn't created before
           if (!fs.existsSync(outputFilename)) {
             // get the test code for the spec
@@ -100,7 +116,7 @@ var codeReporter = function (baseReporterDecorator, config, logger, helper, form
             this.createFile(outputFilename, html);
             // push the created file path and title to an array for building the index page
             createdFiles.push(outputFilename);
-            fileTitles.push(failedSpecList[i].result.description);
+            fileTitles.push(failedSpecList[i].browser.name + " - " + failedSpecList[i].result.description);
           }
         }
       }
@@ -161,9 +177,9 @@ var codeReporter = function (baseReporterDecorator, config, logger, helper, form
     // append the list
     html += "<div class='col-md-12'><ul class='spec_list_ul'>";
     // for each file created
-    fileTitles.forEach(function (value, index) {
+    fileTitles.sort((a,b) => a >= b ? 1 : -1).forEach(function (value, index) {
       // append the file title and link it to the file path
-      html += "<li><a href='" + path.resolve(config.basePath + path.sep + createdFiles[index]) + "'>" + fileTitles[index] + "</a></li>";
+      html += "<li><a href='" + url.pathToFileURL(path.resolve(config.basePath + path.sep + createdFiles[index])) + "'>" + fileTitles[index] + "</a></li>";
     });
     // close the document
     html += "</ul></div></div></div></body></html>";
@@ -201,15 +217,18 @@ var codeReporter = function (baseReporterDecorator, config, logger, helper, form
     if(result.log && Array.isArray(result.log)){
       var loglines = result.log[0].split("\n");
       args.source = loglines.filter((line) => { return /\s*at UserContext/.test(line) == true; })[0];
+      if(args.source == undefined) args.source = loglines.filter((line) => { return /\s*at Anonymous function/.test(line) == true; })[0];
+      if(args.source == undefined) args.source = loglines.filter((line) => { return /^\s*@/.test(line) == true; })[0];
       if(args.source){
-      args.filename = args.source.split("?")[0].split("base")[1].substr(1);
-      args.query = args.source.split("?")[1];
-      if(args.query){
-        args.queryArgs = {};
-        args.queryArgs.line = args.query.split(":")[1];
-        args.queryArgs.id = args.query.split(":")[0];
-        args.queryArgs.pos = args.query.split(":")[2];
-      }}
+        args.filename = args.source.split("?")[0].split("base")[1].substr(1);
+        args.query = args.source.split("?")[1].replace(/\)$/,'');
+        if(args.query){
+          args.queryArgs = {};
+          args.queryArgs.line = args.query.split(":")[1];
+          args.queryArgs.id = args.query.split(":")[0];
+          args.queryArgs.pos = args.query.split(":")[2];
+        }
+      }
       args.scope = result.suite[0];
       args.name = result.description;
       args.elapsed = result.time;
@@ -269,8 +288,8 @@ var codeReporter = function (baseReporterDecorator, config, logger, helper, form
     // return beforeEach/afterEach methods contained by the found groups
     bounds.deconst.forEach(function (bound) {
       var dismiss = false;
-      dismissed.groups.forEach(function(group){
-        if(bound[1] <= group[1] && bound[0] >= group[0]){
+      dismissed.groups.forEach(function(group) {
+        if(bound[1] <= group[1] && bound[0] >= group[0]) {
           dismiss = true;
           return;
         }
@@ -324,14 +343,14 @@ var codeReporter = function (baseReporterDecorator, config, logger, helper, form
     // add the test case files to the ignored files array
     config.codeReporter.testFiles.forEach(function (pattern) {
       _.extend(that.ignoreFiles, glob.sync(pattern, { root: config.basePath }).map(function (fp) {
-        return path.resolve(fp.replace(/\\/g, path.sep).replace(/\//g, path.sep));
+        return url.pathToFileURL(path.resolve(fp.replace(/\\/g, path.sep).replace(/\//g, path.sep))).href;
       }));
     });
 
     // get the ignore-free version of js files array
-    this.jsFiles = _.difference(_.map(jsFiles, function (d) { return path.resolve(d.replace(/\\/g, path.sep).replace(/\//g, path.sep)); }), this.ignoreFiles);
+    this.jsFiles = _.difference(_.map(jsFiles, function (d) { return url.pathToFileURL(path.resolve(d.replace(/\\/g, path.sep).replace(/\//g, path.sep))).href; }), this.ignoreFiles);
     // get the ignore-free version of css files array
-    this.cssFiles = _.difference(_.map(cssFiles, function (d) { return path.resolve(d.replace(/\\/g, path.sep).replace(/\//g, path.sep)); }), this.ignoreFiles);
+    this.cssFiles = _.difference(_.map(cssFiles, function (d) { return url.pathToFileURL(path.resolve(d.replace(/\\/g, path.sep).replace(/\//g, path.sep))).href; }), this.ignoreFiles);
 
     _.merge(this.cssFiles, _.remove(this.jsFiles, function(value){
       return _.endsWith(value, ".css");
